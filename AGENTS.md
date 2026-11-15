@@ -15,7 +15,8 @@
 
 - `main` contains the approved PWA and deploys to `layerwave` through GitHub Actions.
 - Pull requests to `main` run tests, the production build, and a Wrangler dry run without deploying.
-- Keep ongoing work on feature branches/worktrees.
+- Make all changes in a new worktree.
+- Always squash merge.
 
 ## Cloudflare
 
