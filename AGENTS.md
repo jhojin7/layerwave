@@ -20,6 +20,7 @@
 - Work in atomic commits, with each commit covering one coherent change.
 - Follow [Conventional Commits](https://www.conventionalcommits.org/) for all commit messages.
 - Always squash merge.
+- After a successful merge, delete the merged branch locally and on the remote.
 
 ## Cloudflare
 
