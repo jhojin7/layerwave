@@ -12,7 +12,7 @@ export default defineConfig({
       id: '/', name: 'Layerwave', short_name: 'Layerwave',
       description: 'Layer YouTube music and ambient sounds.',
       start_url: '/', scope: '/', display: 'standalone',
-      theme_color: '#141715', background_color: '#141715',
+      theme_color: '#0a0a0a', background_color: '#0a0a0a',
       icons: [
         { src: '/icons/icon-192.png', sizes: '192x192', type: 'image/png' },
         { src: '/icons/icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
@@ -20,7 +20,7 @@ export default defineConfig({
       ],
     },
     workbox: {
-      globPatterns: ['**/*.{js,css,html,png,svg,ico}'],
+      globPatterns: ['**/*.{js,css,html,png,svg,ico,woff2}'],
       navigateFallbackAllowlist: [/^\/$/],
       // No runtime media caching: YouTube remains online-only.
     },
