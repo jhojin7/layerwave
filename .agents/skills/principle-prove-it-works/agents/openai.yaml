@@ -1,0 +1,4 @@
+interface:
+  display_name: "Prove it works"
+  short_description: "Verify the actual changed artifact before claiming done"
+  default_prompt: "Use $principle-prove-it-works to verify the task outcome against the actual artifact."

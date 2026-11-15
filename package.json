@@ -10,9 +10,11 @@
     "preview": "vite preview --host 127.0.0.1",
     "deploy:check": "wrangler deploy --dry-run",
     "deploy": "npm run build && wrangler deploy",
-    "test": "node --experimental-strip-types --test src/lib/*.test.ts src/stores/*.test.ts"
+    "test": "node --experimental-strip-types --test src/lib/*.test.ts src/stores/*.test.ts",
+    "verify:ui": "tsc --project .agents/skills/verify-layerwave/tsconfig.json && playwright test --config .agents/skills/verify-layerwave/playwright.config.ts"
   },
   "devDependencies": {
+    "@playwright/test": "1.65.1",
     "@tailwindcss/vite": "^4.3.5",
     "@types/node": "^26.6.6",
     "@types/react": "^19.3.0",
