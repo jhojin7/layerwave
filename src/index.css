@@ -151,7 +151,14 @@
   margin: auto;
   padding: max(24px, env(safe-area-inset-top)) max(20px, env(safe-area-inset-right)) max(40px, env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left));
 }
+.listening-mixer { grid-template-areas: 'header' 'master' 'channels'; gap: 24px; }
 .mixer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 16px; }
+.layer-strip > [data-slot="channel-strip-layout"] {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas: 'header' 'fader' 'controls' 'notice';
+  gap: 20px;
+}
+.layer-strip [data-slot="channel-strip-controls"] { justify-content: flex-start; flex-wrap: wrap; gap: 8px; }
 .control-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
 button, [data-slot="button"] { min-height: 44px; min-width: 44px; }
 .volume-fader { width: 100%; }
