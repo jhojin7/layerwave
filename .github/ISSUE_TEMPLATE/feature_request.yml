@@ -1,0 +1,44 @@
+name: Feature request
+description: Suggest an improvement to Layerwave's YouTube listening mixer.
+title: "[Feature]: "
+body:
+  - type: checkboxes
+    id: existing-issues
+    attributes:
+      label: Existing requests
+      options:
+        - label: I searched existing issues and did not find this request.
+          required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem would this solve?
+      description: Describe what you are trying to do and what gets in the way.
+      placeholder: When I use Layerwave to..., I would like to...
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+      description: Describe how you would like the feature to work.
+    validations:
+      required: true
+  - type: textarea
+    id: success-outcome
+    attributes:
+      label: What should users be able to do when this is complete?
+      description: Give an observable outcome or a short scenario that would show the problem is solved.
+      placeholder: After I..., I can... and I see...
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Share any other approaches or workarounds you have considered.
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Add mockups, screenshots, or examples. For device-specific requests, include the device, browser, and whether you use the installed PWA.
