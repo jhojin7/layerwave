@@ -1,0 +1,13 @@
+{
+  "name": "layerwave",
+  "version": "0.0.1",
+  "private": true,
+  "description": "A YouTube-only layered listening mixer.",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy"
+  },
+  "devDependencies": {
+    "wrangler": "4.162.0"
+  }
+}
