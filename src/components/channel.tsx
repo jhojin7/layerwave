@@ -1,8 +1,9 @@
 import { useEffect, useEffectEvent, useRef, useState } from 'react'
 import { ExternalLink, Pause, Play, Trash2, Volume2, VolumeX } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
-import { Fader } from '@/components/ui/fader'
+import { Fader, FaderLabel, FaderValue, FaderTrack, FaderRange, FaderThumb } from '@/components/ui/fader'
+import { MuteToggle } from '@/components/ui/channel-toggle'
+import { ChannelStrip, ChannelStripHeader, ChannelStripTitle, ChannelStripText, ChannelStripDescription, ChannelStripActions, ChannelStripStatus, ChannelStripFader, ChannelStripControls, ChannelStripNotice } from '@/components/ui/channel-strip'
 import { loadYouTubeApi, outputVolume } from '@/lib/youtube'
 import type { Channel as ChannelData } from '@/lib/mix'
 
@@ -103,27 +104,30 @@ export function Channel({ channel, masterDb, index, update, remove, register, re
     return () => window.clearInterval(timer)
   }, [ready])
 
-  return <Card className="channel border-border bg-card shadow-none">
-    <CardContent className="space-y-5 p-5">
-      <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0"><p className="mb-1 text-xs font-medium tracking-widest text-muted-foreground">LAYER {String(index + 1).padStart(2, '0')}</p><h2 className="text-lg font-semibold">{channel.title}</h2></div>
+  return <ChannelStrip variant="card" muted={channel.muted} className="layer-strip rounded-xl p-5 shadow-none">
+      <ChannelStripHeader className="grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3">
+        <ChannelStripText className="gap-2">
+          <ChannelStripDescription>Layer {String(index + 1).padStart(2, '0')}</ChannelStripDescription>
+          <h3><ChannelStripTitle className="block overflow-visible text-base whitespace-normal">{channel.title}</ChannelStripTitle></h3>
+          <span className="text-xs text-muted-foreground tabular-nums">{time(position)} / {duration ? time(duration) : '—'}</span>
+        </ChannelStripText>
+        <ChannelStripActions>
         <Button variant="ghost" size="icon" aria-label={`Remove ${channel.title}`} onClick={remove}><Trash2 aria-hidden="true" className="size-4" /></Button>
-      </div>
+        </ChannelStripActions>
+        <ChannelStripStatus className="col-span-2 justify-self-start" tone={error ? 'error' : state === 1 ? 'live' : 'default'}>{error ? 'Playback issue' : ready ? states[state] || 'Ready' : 'Loading…'}</ChannelStripStatus>
+      </ChannelStripHeader>
       <div ref={mount} hidden aria-hidden="true" />
-      <div className="flex items-center justify-between gap-3 text-sm">
-        <span className={state === 1 ? 'text-primary' : 'text-muted-foreground'}>{error ? 'Playback needs attention' : ready ? states[state] || 'Ready' : 'Loading YouTube…'}</span>
-        <span className="shrink-0 font-mono text-xs text-muted-foreground">{time(position)} / {duration ? time(duration) : '—'}</span>
-      </div>
-      {error && <p className="text-sm text-destructive" role="status">{error}</p>}
-      <div>
-        <div className="mb-2 flex justify-between text-sm"><span>Layer volume</span><span className="text-muted-foreground">{channel.gainDb <= -60 ? 0 : Math.round(100 * 10 ** (channel.gainDb / 20))}%</span></div>
-        <Fader className="volume-fader" aria-label={`${channel.title} volume`} orientation="horizontal" min={-60} max={0} value={channel.gainDb} onValueChange={(gainDb) => update({ gainDb })} />
-      </div>
-      <div className="control-row">
-        <Button variant="secondary" disabled={!ready} onClick={() => state === 1 ? player.current?.pauseVideo() : player.current?.playVideo()}>{state === 1 ? <Pause aria-hidden="true" /> : <Play aria-hidden="true" />}{state === 1 ? 'Pause' : 'Play'}</Button>
-        <Button variant={channel.muted ? 'default' : 'outline'} aria-pressed={channel.muted} onClick={() => update({ muted: !channel.muted })}>{channel.muted ? <VolumeX aria-hidden="true" /> : <Volume2 aria-hidden="true" />}{channel.muted ? 'Muted' : 'Mute'}</Button>
-        <a className="ml-auto inline-flex min-h-11 items-center gap-1 text-sm text-muted-foreground underline-offset-4 hover:underline" href={`https://www.youtube.com/watch?v=${channel.videoId}`} target="_blank" rel="noreferrer">YouTube <ExternalLink aria-hidden="true" className="size-3" /></a>
-      </div>
-    </CardContent>
-  </Card>
+      <ChannelStripFader>
+        <Fader className="volume-fader" aria-label={`${channel.title} volume`} orientation="horizontal" min={-60} max={0} resetValue={-6} value={channel.gainDb} onValueChange={(gainDb) => update({ gainDb })}>
+          <div className="mb-1 flex items-center justify-between gap-3"><FaderLabel>Layer volume</FaderLabel><FaderValue /></div>
+          <FaderTrack><FaderRange /><FaderThumb /></FaderTrack>
+        </Fader>
+      </ChannelStripFader>
+      <ChannelStripControls>
+        <Button variant="secondary" aria-label={`${state === 1 ? 'Pause' : 'Play'} ${channel.title}`} disabled={!ready} onClick={() => state === 1 ? player.current?.pauseVideo() : player.current?.playVideo()}>{state === 1 ? <Pause aria-hidden="true" /> : <Play aria-hidden="true" />}{state === 1 ? 'Pause' : 'Play'}</Button>
+        <MuteToggle className="px-3" variant="outline" aria-label={`Mute ${channel.title}`} pressed={channel.muted} onPressedChange={(muted) => update({ muted })}>{channel.muted ? <VolumeX aria-hidden="true" /> : <Volume2 aria-hidden="true" />}Mute</MuteToggle>
+        <a className="ml-auto inline-flex min-h-11 items-center gap-1 text-xs text-muted-foreground underline-offset-4 hover:underline" aria-label={`Open ${channel.title} on YouTube`} href={`https://www.youtube.com/watch?v=${channel.videoId}`} target="_blank" rel="noreferrer">YouTube <ExternalLink aria-hidden="true" className="size-3" /></a>
+      </ChannelStripControls>
+      {error && <ChannelStripNotice variant="destructive">{error}</ChannelStripNotice>}
+  </ChannelStrip>
 }
