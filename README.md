@@ -2,7 +2,7 @@
 
 A YouTube-only mixer for layering music and ambient audio.
 
-`main` serves the original single-file demo unchanged. The `rebuild/pwa` branch contains the React proof of concept with shadcn/ui and audiocn controls. The original HTML is preserved at `public/legacy/index.html` on this branch.
+`main` contains the React proof of concept with shadcn/ui and audiocn controls. The original HTML is preserved at `public/legacy/index.html` and served at `/legacy/`.
 
 ## Run and deploy
 
@@ -16,11 +16,21 @@ npm run deploy:preview
 
 Deployment requires an authenticated Wrangler session (`npx wrangler login`). No credentials belong in this repository.
 
-Live original demo: https://layerwave.jhojin7.workers.dev
+Live app: https://layerwave.jhojin7.workers.dev
+
+Original demo: https://layerwave.jhojin7.workers.dev/legacy/
 
 Live rebuild preview: https://layerwave-poc.jhojin7.workers.dev
 
-The rebuild preview targets a separate Worker, `layerwave-poc`. `npm run deploy` targets the original `layerwave` Worker and replaces the baseline; use `deploy:preview` while developing.
+The preview targets a separate Worker, `layerwave-poc`. Use `deploy:preview` while developing.
+
+## CI/CD
+
+[GitHub Actions](https://github.com/jhojin7/layerwave/actions/workflows/ci.yml) runs on pushes to `main`, pull requests targeting `main`, and manual dispatch.
+
+All runs install from the lockfile, run tests, type-check and build the PWA, and validate the Wrangler bundle. Successful pushes/manual runs on `main` deploy that build to the `layerwave` Worker and verify the hosted HTML matches the build. Pull requests never deploy. Production deploys run serially.
+
+Node.js 24 is selected in `.node-version`. Deployment requires the repository Actions secrets `CLOUDFLARE_ACCOUNT_ID` and `CLOUDFLARE_API_TOKEN`. Use an account-scoped API token with Workers Scripts edit permission; local Wrangler OAuth credentials are not used in CI.
 
 Cloudflare's official agent skills are installed in `.agents/skills/`. See [Cloudflare setup](docs/cloudflare-setup.md) for MCP configuration and authentication on a new machine.
 

@@ -11,12 +11,12 @@
 - Keep the mixer audio-focused: no visible video players and no explanatory footer. The user delegated playback implementation after clarifying the original HTML also creates hidden YouTube players.
 - Do not promise background or locked-screen playback on mobile.
 
-## Baseline and rebuild
+## Branches and deployment
 
-- `main` initially publishes the original demo at `public/index.html`.
-- Develop the rebuild in the separate `rebuild/pwa` worktree/branch.
-- Preserve the original demo as a reference when replacing the app entry point.
-- Keep the live baseline available until the rebuild is explicitly deployed to production.
+- `main` contains the approved PWA and deploys to `layerwave` through GitHub Actions.
+- Pull requests to `main` run tests, the production build, and a Wrangler dry run without deploying.
+- Preserve the original demo at `public/legacy/index.html`, served at `/legacy/`.
+- Keep ongoing work on feature branches/worktrees. `npm run deploy:preview` targets the separate `layerwave-poc` Worker.
 
 ## Cloudflare
 

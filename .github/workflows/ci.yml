@@ -1,0 +1,70 @@
+name: Build and deploy
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: layerwave-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version-file: .node-version
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Test
+        run: npm test
+
+      - name: Type-check and build PWA
+        run: npm run build
+
+      - name: Validate deployment bundle
+        run: npx --no-install wrangler deploy --dry-run
+
+      - name: Deploy to Cloudflare
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ] || [ -z "$CLOUDFLARE_ACCOUNT_ID" ]; then
+            echo '::error::Cloudflare deployment secrets are missing.'
+            exit 1
+          fi
+          npx --no-install wrangler deploy
+
+      - name: Verify published build
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        env:
+          DEPLOYMENT_URL: https://layerwave.jhojin7.workers.dev
+        run: |
+          for attempt in 1 2 3 4 5 6; do
+            if curl --fail --silent --show-error --max-time 20 "$DEPLOYMENT_URL/" -o "$RUNNER_TEMP/deployed-index.html" && cmp -s dist/index.html "$RUNNER_TEMP/deployed-index.html"; then
+              echo "Deployed: $DEPLOYMENT_URL" >> "$GITHUB_STEP_SUMMARY"
+              exit 0
+            fi
+            sleep 5
+          done
+          echo '::error::The published HTML does not match this build.'
+          exit 1
