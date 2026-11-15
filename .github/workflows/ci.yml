@@ -40,7 +40,7 @@ jobs:
         run: npm run build
 
       - name: Validate deployment bundle
-        run: npx --no-install wrangler deploy --dry-run
+        run: npm run deploy:check
 
       - name: Deploy to Cloudflare
         if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'

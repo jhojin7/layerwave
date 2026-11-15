@@ -8,6 +8,7 @@
     "build": "tsc --noEmit && vite build",
     "typecheck": "tsc --noEmit",
     "preview": "vite preview --host 127.0.0.1",
+    "deploy:check": "wrangler deploy --dry-run",
     "deploy": "npm run build && wrangler deploy",
     "test": "node --experimental-strip-types --test src/lib/youtube.test.ts"
   },
