@@ -14,6 +14,10 @@ npm run deploy
 
 Deployment requires an authenticated Wrangler session (`npx wrangler login`). No credentials belong in this repository.
 
+Live original demo: https://layerwave.jhojin7.workers.dev
+
+Cloudflare's official agent skills are installed in `.agents/skills/`. See [Cloudflare setup](docs/cloudflare-setup.md) for MCP configuration and authentication on a new machine.
+
 ## Rebuild direction
 
 Build a phone- and tablet-friendly PWA with React, shadcn/ui, and audiocn. Keep YouTube as the only media source. Support adding and removing videos, independent volume and mute, master volume, global playback, and visible playback status and position. Preserve the original demo while developing the rebuild in a separate worktree and branch.
