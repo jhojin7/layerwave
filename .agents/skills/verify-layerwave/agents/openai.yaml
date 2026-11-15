@@ -1,0 +1,4 @@
+interface:
+  display_name: "Verify Layerwave"
+  short_description: "Drive the mixer and PWA and retain proof artifacts"
+  default_prompt: "Use $verify-layerwave to check the relevant mixer and PWA behavior and report evidence and limits."

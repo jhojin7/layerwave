@@ -27,6 +27,18 @@ npm run deploy:check
 
 `deploy:check` uses the pinned local Wrangler to validate the static asset bundle without deploying. The PWA caches the app shell and bundled fonts; YouTube playback requires internet.
 
+## Verification
+
+```sh
+npm test
+npx --no-install playwright install chromium
+npm run verify:ui
+```
+
+The browser checks build the PWA and exercise layers, volume and mute settings, saved mixes, and offline reload in desktop and phone Chromium. Each run prints its evidence directory under `work/verification/` and stops its preview and browsers afterward. Live YouTube playback, physical-device installation, and update prompts need the additional checks in [the verification skill](.agents/skills/verify-layerwave/SKILL.md).
+
+The repo includes Poteto's `$create-verification-skill`, `$maintain-verification-skill`, and proof principle, adapted for Codex. See [provenance and setup](.agents/skills/poteto-verification.md).
+
 ## Deployment
 
 Push to `main` to run tests, build, and deploy to Cloudflare through [GitHub Actions](https://github.com/jhojin7/layerwave/actions/workflows/ci.yml). Pull requests run checks only.

@@ -22,6 +22,13 @@
 - Always squash merge.
 - After a successful merge, delete the merged branch locally and on the remote.
 
+## Verification
+
+- Before claiming a task is done, apply `.agents/skills/principle-prove-it-works/SKILL.md` to the actual changed artifact. Report exact checks and any unverified behavior.
+- For mixer, persistence, playback, or PWA changes, use `.agents/skills/verify-layerwave/SKILL.md` and its feature map. `npm run verify:ui` builds and drives the real app; it does not prove live YouTube playback.
+- Use `$create-verification-skill` to add verification for a new surface and `$maintain-verification-skill` to audit the existing skill and map. Keep skill changes grounded in observed behavior.
+- Distinguish local changes and checks from commits, pushes, PRs, GitHub CI, merges, and deployments. Report only the delivery state observed.
+
 ## Cloudflare
 
 - Use the pinned local Wrangler via npm scripts and the checked-in `wrangler.jsonc`.
