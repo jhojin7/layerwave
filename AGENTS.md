@@ -5,6 +5,7 @@
 - Build a YouTube-only listening mixer for phones, tablets, and desktops.
 - Use React, TypeScript, shadcn/ui, and audiocn.
 - Support add/remove, independent volume/mute, master volume, global playback, and playback status/position.
+- Start with an empty mix. Persist user-added layers and mixer settings; do not preload music.
 - Make the app installable as a PWA. Cache only the app shell; YouTube media requires internet.
 - Use the official YouTube IFrame Player API. Do not extract, proxy, download, or rehost YouTube media.
 - Show actual player state and errors. Do not synthesize waveforms or audio meter readings from unavailable cross-origin audio.

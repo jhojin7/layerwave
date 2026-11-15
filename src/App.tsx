@@ -5,13 +5,14 @@ import { Input } from '@/components/ui/input'
 import { Fader, FaderLabel, FaderValue, FaderTrack, FaderRange, FaderThumb } from '@/components/ui/fader'
 import { Mixer, MixerHeader, MixerTitle, MixerChannels, MixerMaster, MixerEmpty } from '@/components/ui/mixer'
 import { Channel, type PlayerStatus } from '@/components/channel'
-import { loadMix, saveMix, type Channel as ChannelData } from '@/lib/mix'
+import { useStore } from 'zustand'
+import { mixStore } from '@/stores/mix'
 import { parseYouTubeId } from '@/lib/youtube'
 import { useRegisterSW } from 'virtual:pwa-register/react'
 
 export default function App() {
   const { needRefresh: [needRefresh], updateServiceWorker } = useRegisterSW()
-  const [mix, setMix] = useState(loadMix)
+  const { mix, addChannel, updateChannel, removeChannel, setMasterDb } = useStore(mixStore)
   const [url, setUrl] = useState('')
   const [message, setMessage] = useState('')
   const [statuses, setStatuses] = useState<Record<string, PlayerStatus>>({})
@@ -23,31 +24,29 @@ export default function App() {
     else players.current.delete(id)
   }, [])
   const report = useCallback((id: string, status: PlayerStatus) => setStatuses((s) => ({ ...s, [id]: status })), [])
-  useEffect(() => { saveMix(mix) }, [mix])
   useEffect(() => {
     const change = () => setOnline(navigator.onLine)
     window.addEventListener('online', change); window.addEventListener('offline', change)
     return () => { window.removeEventListener('online', change); window.removeEventListener('offline', change) }
   }, [])
 
-  const update = (id: string, patch: Partial<ChannelData>) => setMix((m) => ({ ...m, channels: m.channels.map((c) => c.id === id ? { ...c, ...patch } : c) }))
   const active = mix.channels.filter((c) => statuses[c.id]?.playing).length
   const ready = mix.channels.filter((c) => statuses[c.id]?.ready).length
   async function add(event: FormEvent) {
     event.preventDefault()
     const videoId = parseYouTubeId(url)
     if (!videoId) { setMessage('Paste a YouTube video link or an 11-character video ID.'); return }
-    if (mix.channels.some((c) => c.videoId === videoId)) { setMessage('That video is already in your mix.'); return }
-    if (mix.channels.length >= 12) { setMessage('You can add up to 12 layers.'); return }
     const id = crypto.randomUUID()
-    setMix((m) => ({ ...m, channels: [...m.channels, { id, videoId, title: `YouTube · ${videoId}`, gainDb: -6, muted: false }] }))
+    const result = addChannel({ id, videoId, title: `YouTube · ${videoId}`, gainDb: -6, muted: false })
+    if (result === 'duplicate') { setMessage('That video is already in your mix.'); return }
+    if (result === 'full') { setMessage('You can add up to 12 layers.'); return }
     setUrl(''); setMessage('Layer added. Press Play when it is ready.'); input.current?.focus()
     // Metadata is optional. Playback never depends on this request.
     try {
       const response = await fetch(`https://www.youtube.com/oembed?url=${encodeURIComponent(`https://www.youtube.com/watch?v=${videoId}`)}&format=json`, { signal: AbortSignal.timeout(8000) })
       if (!response.ok) return
       const data: unknown = await response.json()
-      if (data && typeof data === 'object' && 'title' in data && typeof data.title === 'string') update(id, { title: data.title })
+      if (data && typeof data === 'object' && 'title' in data && typeof data.title === 'string') updateChannel(id, { title: data.title })
     } catch { /* Keep the video ID as a usable source label. */ }
   }
 
@@ -84,12 +83,12 @@ export default function App() {
               <Button variant="outline" disabled={!ready} onClick={() => players.current.forEach((p) => p.pauseVideo())}><Pause aria-hidden="true" />Pause all</Button>
             </div>
           </div>
-          <Fader className="volume-fader" aria-label="Master volume" orientation="horizontal" min={-60} max={0} resetValue={-2} value={mix.masterDb} onValueChange={(masterDb) => setMix((m) => ({ ...m, masterDb }))}>
+          <Fader className="volume-fader" aria-label="Master volume" orientation="horizontal" min={-60} max={0} resetValue={-2} value={mix.masterDb} onValueChange={setMasterDb}>
             <div className="mb-1 flex items-center justify-between gap-3"><FaderLabel>Master volume</FaderLabel><FaderValue /></div>
             <FaderTrack><FaderRange /><FaderThumb /></FaderTrack>
           </Fader>
         </MixerMaster>
-        <MixerChannels scrollable={false} className="mixer-grid">{mix.channels.map((channel, index) => <Channel key={channel.id} channel={channel} index={index} masterDb={mix.masterDb} register={register} report={report} update={(patch) => update(channel.id, patch)} remove={() => { players.current.get(channel.id)?.pauseVideo(); setMix((m) => ({ ...m, channels: m.channels.filter((c) => c.id !== channel.id) })); setStatuses((s) => { const next = { ...s }; delete next[channel.id]; return next }); input.current?.focus() }} />)}</MixerChannels>
+        <MixerChannels scrollable={false} className="mixer-grid">{mix.channels.map((channel, index) => <Channel key={channel.id} channel={channel} index={index} masterDb={mix.masterDb} register={register} report={report} update={(patch) => updateChannel(channel.id, patch)} remove={() => { players.current.get(channel.id)?.pauseVideo(); removeChannel(channel.id); setStatuses((s) => { const next = { ...s }; delete next[channel.id]; return next }); input.current?.focus() }} />)}</MixerChannels>
         <MixerEmpty className="min-h-40 flex-col gap-2"><p className="font-heading text-base font-medium text-foreground">No layers yet</p><p>Add a YouTube link to start your mix.</p></MixerEmpty>
       </Mixer>
     </main>

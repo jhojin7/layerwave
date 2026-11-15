@@ -15,6 +15,8 @@ npm run dev
 
 The UI uses [shadcn preset `b3Zg8kxGTo`](https://ui.shadcn.com/create?preset=b3Zg8kxGTo&item=preview): Radix Vega, neutral surfaces, cyan accents, JetBrains Mono text, and Geist headings. Mixer layout, channel strips, faders, and mute toggles come from [audiocn](https://www.audiocn.dev/docs/components).
 
+New mixes start empty. A Zustand store persists user-added layers, layer volumes, mute settings, and master volume in local storage. Playback status and position come from YouTube and are not persisted. Existing saved mixes migrate automatically, removing the old seeded layers while preserving user-added tracks.
+
 Run the same checks as the pull request workflow:
 
 ```sh
