@@ -18,6 +18,8 @@ Deployment requires an authenticated Wrangler session (`npx wrangler login`). No
 
 Live original demo: https://layerwave.jhojin7.workers.dev
 
+Live rebuild preview: https://layerwave-poc.jhojin7.workers.dev
+
 The rebuild preview targets a separate Worker, `layerwave-poc`. `npm run deploy` targets the original `layerwave` Worker and replaces the baseline; use `deploy:preview` while developing.
 
 Cloudflare's official agent skills are installed in `.agents/skills/`. See [Cloudflare setup](docs/cloudflare-setup.md) for MCP configuration and authentication on a new machine.
