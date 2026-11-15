@@ -21,8 +21,7 @@ export default defineConfig({
     },
     workbox: {
       globPatterns: ['**/*.{js,css,html,png,svg,ico}'],
-      globIgnores: ['legacy/**'],
-      navigateFallbackDenylist: [/^\/legacy\//],
+      navigateFallbackAllowlist: [/^\/$/],
       // No runtime media caching: YouTube remains online-only.
     },
   })],

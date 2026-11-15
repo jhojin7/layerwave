@@ -45,12 +45,3 @@ The optional beta `cf` CLI was not installed. This project already has a Wrangle
 The account token is named `layerwave-github-actions` in the Cloudflare dashboard. It is restricted to this account with the Workers Scripts Write permission. The token value was sent directly to GitHub's encrypted secret store and is not stored in this repository. Revoke or rotate that named token through the Cloudflare account API tokens page, then update the GitHub secret.
 
 CI uses the pinned project Wrangler and Node.js 24. It does not depend on any developer's local OAuth session.
-
-## Initial deployment
-
-- Public repository: https://github.com/jhojin7/layerwave
-- Original demo: https://layerwave.jhojin7.workers.dev
-- Baseline commit: `eaca569`
-- Initial deployment version: `774f1f41-f3ff-4b37-889a-c7a61201ba0c`
-
-The deployed HTML was fetched over HTTPS and compared byte-for-byte with `public/index.html`. This confirms publication of the supplied file, not YouTube playback compatibility.

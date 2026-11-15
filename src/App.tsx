@@ -37,7 +37,7 @@ export default function App() {
     const videoId = parseYouTubeId(url)
     if (!videoId) { setMessage('Paste a YouTube video link or an 11-character video ID.'); return }
     if (mix.channels.some((c) => c.videoId === videoId)) { setMessage('That video is already in your mix.'); return }
-    if (mix.channels.length >= 12) { setMessage('This proof of concept supports up to 12 layers.'); return }
+    if (mix.channels.length >= 12) { setMessage('You can add up to 12 layers.'); return }
     const id = crypto.randomUUID()
     setMix((m) => ({ ...m, channels: [...m.channels, { id, videoId, title: `YouTube · ${videoId}`, gainDb: -6, muted: false }] }))
     setUrl(''); setMessage('Layer added. Press Play when it is ready.'); input.current?.focus()
@@ -53,7 +53,7 @@ export default function App() {
   return <div className="app-shell">
     <a className="skip-link" href="#mix">Skip to mixer</a>
     <header className="mb-12 flex flex-wrap items-center justify-between gap-4 border-b border-border pb-6">
-      <a href="/" className="flex items-center gap-3 text-xl font-semibold tracking-tight"><AudioLines aria-hidden="true" className="size-7 text-primary" />layerwave<span className="rounded-full border border-border px-2 py-1 text-[10px] uppercase tracking-widest text-muted-foreground">PoC</span></a>
+      <a href="/" className="flex items-center gap-3 text-xl font-semibold tracking-tight"><AudioLines aria-hidden="true" className="size-7 text-primary" />layerwave</a>
       {needRefresh ? <Button variant="secondary" onClick={() => updateServiceWorker(true)}>Update app</Button> : <span className="text-xs text-muted-foreground">Your sounds, in balance.</span>}
     </header>
     <main>

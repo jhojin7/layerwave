@@ -9,8 +9,7 @@
     "typecheck": "tsc --noEmit",
     "preview": "vite preview --host 127.0.0.1",
     "deploy": "npm run build && wrangler deploy",
-    "test": "node --experimental-strip-types --test src/lib/youtube.test.ts",
-    "deploy:preview": "npm run build && wrangler deploy --name layerwave-poc"
+    "test": "node --experimental-strip-types --test src/lib/youtube.test.ts"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.3.5",
