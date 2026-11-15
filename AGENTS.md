@@ -8,6 +8,7 @@
 - Make the app installable as a PWA. Cache only the app shell; YouTube media requires internet.
 - Use the official YouTube IFrame Player API. Do not extract, proxy, download, or rehost YouTube media.
 - Show actual player state and errors. Do not synthesize waveforms or audio meter readings from unavailable cross-origin audio.
+- Keep the mixer audio-focused: no visible video players and no explanatory footer. The user delegated playback implementation after clarifying the original HTML also creates hidden YouTube players.
 - Do not promise background or locked-screen playback on mobile.
 
 ## Baseline and rebuild
