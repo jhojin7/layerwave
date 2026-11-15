@@ -16,6 +16,8 @@
 - `main` contains the approved PWA and deploys to `layerwave` through GitHub Actions.
 - Pull requests to `main` run tests, the production build, and a Wrangler dry run without deploying.
 - Make all changes in a new worktree.
+- Work in atomic commits, with each commit covering one coherent change.
+- Follow [Conventional Commits](https://www.conventionalcommits.org/) for all commit messages.
 - Always squash merge.
 
 ## Cloudflare
